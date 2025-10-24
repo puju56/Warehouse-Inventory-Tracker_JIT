@@ -1,5 +1,9 @@
 package edu.test;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
@@ -23,13 +27,32 @@ public class Warehouse {
 //	implementation of alertService
 
 	class WarehouseAlert implements AlertService {
+		private static final String File_Name = "Warehouse.txt";
+
+		private void saveTofile(String msg) {
+			try {
+
+				FileWriter fw = new FileWriter(File_Name, true);
+				BufferedWriter bw = new BufferedWriter(fw);
+				bw.write(msg);
+				bw.newLine();
+			} catch (Exception e) {
+				System.out.println("Error: file not saved " + e.getMessage());
+			}
+		}
+
 		public void stockLow(String Productname, int quantity) {
-			System.out.println("Alert: low stock for " + Productname + "! Only " + quantity + " Left");
+			String Alertmsg = "Alert: low stock for " + Productname + "! Only " + quantity + " Left";
+			System.out.println(Alertmsg);
+			saveTofile(Alertmsg);
 		}
 
 		@Override
 		public void stockUpdate(String Productname, int quantity) {
-			System.out.println("Stock updated for "+Productname+" current quantity: "+quantity);
+			String msg = "Stock updated for " + Productname + " current quantity: " + quantity;
+			System.out.println(msg);
+			saveTofile(msg);
+
 		}
 	}
 
@@ -55,7 +78,7 @@ public class Warehouse {
 
 		@Override
 		public void receiveShipment(String Productname, int quantity) {
-			System.out.println("Receive Shopment for " + Productname + " qauntity : " + quantity);
+			System.out.println("Receive Shipment for " + Productname + " qauntity : " + quantity);
 			stockAdd(Productname, quantity);
 		}
 
@@ -77,15 +100,14 @@ public class Warehouse {
 				alertService.stockLow(Productname, quantity);
 			}
 		}
-		
+
 		public void showStock() {
 			System.out.println("Current Warehouse Stock: ");
-			if(stockmap.isEmpty()) {
+			if (stockmap.isEmpty()) {
 				System.out.println("No item in stock. ");
-			}
-			else {
-				for(Map.Entry<String, Integer>entry:stockmap.entrySet()) {
-					System.out.println(entry.getKey()+": "+entry.getValue());
+			} else {
+				for (Map.Entry<String, Integer> entry : stockmap.entrySet()) {
+					System.out.println(entry.getKey() + ": " + entry.getValue());
 				}
 			}
 			System.out.println();
@@ -108,6 +130,7 @@ public class Warehouse {
 			System.out.println("2. Receive Shipment ");
 			System.out.println("3. Fullfill Order ");
 			System.out.println("4. Show Stock ");
+			System.out.println("5. Show file");
 			System.out.println("0. Exit ");
 
 			System.out.println("Enter your choice: ");
@@ -121,6 +144,7 @@ public class Warehouse {
 				System.out.println("Enter Quantity to add: ");
 				int addQty = sc.nextInt();
 				warehobserver.stockAdd(Additem, addQty);
+				System.out.println("Stock added sucessfully!");
 				break;
 
 			case 2:
@@ -138,17 +162,28 @@ public class Warehouse {
 				int orderQty = sc.nextInt();
 				warehobserver.fullFillOrder(orderitem, orderQty);
 				break;
-				
+
 			case 4:
 				warehobserver.showStock();
 				break;
-				
+
+			case 5:
+				System.out.println("Files content show :");
+				try {
+					BufferedReader br = new BufferedReader(new FileReader("Warehouse.txt"));
+					String line;
+					while ((line = br.readLine())!= null) {
+						System.out.println(line);
+					}
+				} catch (Exception e) {
+					System.out.println("Error reading file: " + e.getMessage());
+				}
+
 			case 0:
 				System.out.println("Exiting.....");
-				
-				default:
-					System.out.println("Invalid choice try again" );
-					
+
+			default:
+				System.out.println("Invalid choice try again");
 
 			}
 
