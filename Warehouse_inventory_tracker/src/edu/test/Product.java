@@ -24,11 +24,11 @@ public class Product {
    public void setProductname(String productname) {
 	Productname = productname;
    }
-   public int getQuantity() {
-	return quantity;
+   public synchronized void increaseQuantity(int amount) {
+	this.quantity+=amount;
    }
-   public void setQuantity(int quantity) {
-	this.quantity = quantity;
+   public synchronized void  decreaseQuantity(int amount) {
+	this.quantity -=amount;
    }
    public int getThreshold() {
 	return threshold;
