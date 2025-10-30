@@ -27,31 +27,18 @@ public class Warehouse {
 //	implementation of alertService
 
 	class WarehouseAlert implements AlertService {
-		private static final String File_Name = "Warehouse.txt";
-
-		private void saveTofile(String msg) {
-			try {
-
-				FileWriter fw = new FileWriter(File_Name, true);
-				BufferedWriter bw = new BufferedWriter(fw);
-				bw.write(msg);
-				bw.newLine();
-			} catch (Exception e) {
-				System.out.println("Error: file not saved " + e.getMessage());
-			}
-		}
 
 		public void stockLow(String Productname, int quantity) {
+
 			String Alertmsg = "Alert: low stock for " + Productname + "! Only " + quantity + " Left";
 			System.out.println(Alertmsg);
-			saveTofile(Alertmsg);
 		}
 
-		@Override
+//		@Override
 		public void stockUpdate(String Productname, int quantity) {
+
 			String msg = "Stock updated for " + Productname + " current quantity: " + quantity;
 			System.out.println(msg);
-			saveTofile(msg);
 
 		}
 	}
@@ -72,6 +59,7 @@ public class Warehouse {
 		public void stockAdd(String Productname, int quantity) {
 			int currQty = stockmap.getOrDefault(Productname, 0);
 			currQty += quantity;
+			alertService.stockUpdate(Productname, quantity);
 			stockmap.put(Productname, currQty);
 
 		}
@@ -90,7 +78,11 @@ public class Warehouse {
 				return;
 			}
 			currQty -= quantity;
-			stockmap.put(productname, currQty);
+			if(currQty<=Low_Stock_ThresHold)
+			{
+				alertService.stockLow(productname, quantity);
+			}
+
 			System.out.println("fullfill-order for " + productname + " quantity: " + quantity);
 
 		}
@@ -130,7 +122,6 @@ public class Warehouse {
 			System.out.println("2. Receive Shipment ");
 			System.out.println("3. Fullfill Order ");
 			System.out.println("4. Show Stock ");
-			System.out.println("5. Show file");
 			System.out.println("0. Exit ");
 
 			System.out.println("Enter your choice: ");
@@ -166,18 +157,6 @@ public class Warehouse {
 			case 4:
 				warehobserver.showStock();
 				break;
-
-			case 5:
-				System.out.println("Files content show :");
-				try {
-					BufferedReader br = new BufferedReader(new FileReader("Warehouse.txt"));
-					String line;
-					while ((line = br.readLine())!= null) {
-						System.out.println(line);
-					}
-				} catch (Exception e) {
-					System.out.println("Error reading file: " + e.getMessage());
-				}
 
 			case 0:
 				System.out.println("Exiting.....");
