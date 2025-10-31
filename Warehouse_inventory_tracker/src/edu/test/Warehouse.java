@@ -74,13 +74,13 @@ public class Warehouse {
 		public void fullFillOrder(String productname, int quantity) {
 			int currQty = stockmap.getOrDefault(productname, 0);
 			if (quantity > currQty) {
-				System.out.println("can't fullfill-order for " + productname + "not enough stock");
+				System.out.println("can't fullfill-order for " + productname + " not enough stock");
 				return;
 			}
 			currQty -= quantity;
 			if(currQty<=Low_Stock_ThresHold)
 			{
-				alertService.stockLow(productname, quantity);
+				alertService.stockLow(productname, currQty);
 			}
 
 			System.out.println("fullfill-order for " + productname + " quantity: " + quantity);
