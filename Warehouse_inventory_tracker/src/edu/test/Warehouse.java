@@ -1,9 +1,5 @@
 package edu.test;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
@@ -113,6 +109,7 @@ public class Warehouse {
 		AlertService alertService = outer.new WarehouseAlert();
 		wareHouseObserver warehobserver = outer.new wareHouseObserver(alertService);
 		Scanner sc = new Scanner(System.in);
+		Map<String,wareHouseObserver>warehouseList=new HashMap<>();
 		int choice;
 
 		System.out.println("---WAREHOUSE INVENTORY TRACKER----");
@@ -122,6 +119,7 @@ public class Warehouse {
 			System.out.println("2. Receive Shipment ");
 			System.out.println("3. Fullfill Order ");
 			System.out.println("4. Show Stock ");
+			System.out.println("5.Create Warehouse ");
 			System.out.println("0. Exit ");
 
 			System.out.println("Enter your choice: ");
@@ -130,15 +128,33 @@ public class Warehouse {
 
 			switch (choice) {
 			case 1:
+				System.out.println(" Enter Warehouse Name: ");
+				String w1 = sc.nextLine();
+				wareHouseObserver wobj1=warehouseList.get(w1);
+				if(wobj1==null) {
+					System.out.println("warehouse not found ");
+					break;
+				}
+
 				System.out.println("Enter Item Name: ");
 				String Additem = sc.nextLine();
 				System.out.println("Enter Quantity to add: ");
 				int addQty = sc.nextInt();
-				warehobserver.stockAdd(Additem, addQty);
+				wobj1.stockAdd(Additem, addQty);
+//				warehobserver.stockAdd(Additem, addQty);
 				System.out.println("Stock added sucessfully!");
 				break;
 
 			case 2:
+				
+				System.out.println(" Enter Warehouse Name: ");
+				String w2 = sc.nextLine();
+				wareHouseObserver wobj2=warehouseList.get(w2);
+				if(wobj2==null) {
+					System.out.println("warehouse not found ");
+					break;
+				}
+				
 				System.out.println("Enter Item Name: ");
 				String shipmentItem = sc.nextLine();
 				System.out.println("Enter Shipment Quantity: ");
@@ -147,6 +163,13 @@ public class Warehouse {
 				break;
 
 			case 3:
+				System.out.println(" Enter Warehouse Name: ");
+				String w3 = sc.nextLine();
+				wareHouseObserver wobj3=warehouseList.get(w3);
+				if(wobj3==null) {
+					System.out.println("warehouse not found ");
+					break;
+				}
 				System.out.println(" Enter Item Name: ");
 				String orderitem = sc.nextLine();
 				System.out.println("Enter order quantity: ");
@@ -155,9 +178,26 @@ public class Warehouse {
 				break;
 
 			case 4:
-				warehobserver.showStock();
-				break;
+				System.out.println(" Enter Warehouse Name: ");
+				String w4 = sc.nextLine().trim();
+				wareHouseObserver wobj4=warehouseList.get(w4);
+				if(wobj4==null) {
+					System.out.println("warehouse not found ");
+					break;
+				}
+//				warehobserver.showStock();
+				wobj4.showStock();
+				
+				
 
+			case 5:
+				System.out.println(" Enter Warehouse Name: ");
+				String wname = sc.nextLine();
+				warehouseList.put(wname, outer.new wareHouseObserver (alertService));
+				System.out.println(" warehouse name : "+wname);
+				
+				break;
+				
 			case 0:
 				System.out.println("Exiting.....");
 
